@@ -11,11 +11,11 @@ object IncomingMessageHandler{
 
 class IncomingMessageHandler extends Actor with ActorLogging{
 
-  log.debug("Spinning actor")
+  log.error("Spinning actor")
   override def receive: Receive = {
 
     case message : TextMessage =>
-      log.debug("rebounding message")
+      log.error("rebounding message")
       sender ! message.textMessage
   }
 }

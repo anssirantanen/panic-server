@@ -1,7 +1,5 @@
 package api
 
-import java.util.concurrent.TimeUnit
-
 import IncomingMessage.IncomingMessageHandler
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
@@ -13,10 +11,11 @@ import akka.util.Timeout
 import scala.concurrent.Await
 
 
-trait IncomingMessageApi {
-  implicit val actorSystem: ActorSystem = ActorSystem("BaseActorSystem")
-  val incomingMessageHandler: ActorRef = actorSystem.actorOf(IncomingMessageHandler.props(),"IncomingMessageHandler")
-  implicit val timeout = Timeout(5, TimeUnit.SECONDS)
+trait IncomingMessageApi  {
+  val actorSystem: ActorSystem
+  implicit val timeout : Timeout
+  actorSystem
+  lazy val incomingMessageHandler: ActorRef = actorSystem.actorOf(IncomingMessageHandler.props(),"IncomingMessageHandler")
 
 def infoMessageApiRoutes : Route  =
   path("base"){
