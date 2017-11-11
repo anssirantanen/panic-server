@@ -1,7 +1,8 @@
 package IncomingMessage
 
 import IncomingMessage.IncomingMessageHandler.TextMessage
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import uiComponents.WebsocketListeners
 
 
 object IncomingMessageHandler{
@@ -10,12 +11,14 @@ object IncomingMessageHandler{
 }
 
 class IncomingMessageHandler extends Actor with ActorLogging{
+  val websocketListeners: ActorRef = context.actorOf(WebsocketListeners.props(), "monitor-websockets-actor")
 
-  log.error("Spinning actor")
+  log.info("Spinning actor")
   override def receive: Receive = {
 
     case message : TextMessage =>
-      log.error("rebounding message")
+      log.info("rebounding message")
+      websocketListeners ! message
       sender ! message.textMessage
   }
 }
