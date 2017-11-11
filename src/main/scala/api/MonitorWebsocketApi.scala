@@ -14,9 +14,10 @@ import akka.NotUsed
 import akka.event.Logging
 import akka.event.jul.Logger
 import akka.http.javadsl.model.ws.WebSocket
-import uiComponents.Websocket.{OutgoingMessage, WebsocketMessage}
+import models.EndpointMessage
+import io.circe.syntax._
+import io.circe.generic.auto._
 
-import scala.concurrent.duration.FiniteDuration
 
 /*
 *  Websocket handling implemented by using:
@@ -37,12 +38,14 @@ trait MonitorWebsocketApi {
      // Flow[Message].to(Sink.actorRef(connectedWsActor,PoisonPill))
       Flow[Message].filter(_ => false).to(Sink.actorRef(connectedWsActor,PoisonPill))
     val outgoingMessage: Source[Message,NotUsed] = Source
-        .actorRef[uiComponents.Websocket.OutgoingMessage](10,OverflowStrategy.fail)
+        .actorRef[EndpointMessage](10,OverflowStrategy.fail)
         .mapMaterializedValue{outgoingActor =>
           connectedWsActor ! uiComponents.Websocket.ConnectToListener(outgoingActor)
           NotUsed
         }.map{
-      case OutgoingMessage(text) => TextMessage(text)
+      message : EndpointMessage =>
+        val json = message.asJson
+        TextMessage(json.toString())
     }
 
     Flow.fromSinkAndSource(incoming, outgoingMessage)
