@@ -15,7 +15,6 @@ class WebsocketListeners  extends Actor with ActorLogging{
 
   override def receive = {
     case message :TextMessage =>
-      log.info(s"received ${message.textMessage}")
       websockets.foreach(socket => socket ! ToWebsocket(message.textMessage))
     case ConnectToListeners =>
       websockets += sender()

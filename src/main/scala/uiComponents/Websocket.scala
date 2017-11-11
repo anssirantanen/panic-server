@@ -22,6 +22,7 @@ class Websocket(websocketListeners : ActorRef) extends Actor with ActorLogging{
     case ToWebsocket(text:String) =>
       socket ! OutgoingMessage(text)
   }
+
 }
 
 

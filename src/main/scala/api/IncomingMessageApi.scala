@@ -14,7 +14,6 @@ import scala.concurrent.Await
 trait IncomingMessageApi  {
   val actorSystem: ActorSystem
   implicit val timeout : Timeout
-  actorSystem
   lazy val incomingMessageHandler: ActorRef = actorSystem.actorOf(IncomingMessageHandler.props(),"IncomingMessageHandler")
 
 def infoMessageApiRoutes : Route  =

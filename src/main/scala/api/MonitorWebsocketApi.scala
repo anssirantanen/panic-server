@@ -31,18 +31,11 @@ trait MonitorWebsocketApi {
   implicit val timeout : Timeout
   lazy val monitorWebsocketActor : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingMessageHandler/monitor-websockets-actor").resolveOne(timeout.duration),timeout.duration )
 
-
-  def greeter: Flow[Message, Message, Any] =
-    Flow[Message].mapConcat {
-      case tm: TextMessage =>
-        TextMessage(Source.single("Hello ") ++ tm.textStream ++ Source.single("!")) :: Nil
-
-    }
-
   def newWebsocketConnection() : Flow[Message, Message, NotUsed]={
     val connectedWsActor = actorSystem.actorOf(uiComponents.Websocket.props(monitorWebsocketActor))
     val incoming: Sink[Message,NotUsed]  =
-      Flow[Message].to(Sink.actorRef(connectedWsActor,PoisonPill))
+     // Flow[Message].to(Sink.actorRef(connectedWsActor,PoisonPill))
+      Flow[Message].filter(_ => false).to(Sink.actorRef(connectedWsActor,PoisonPill))
     val outgoingMessage: Source[Message,NotUsed] = Source
         .actorRef[uiComponents.Websocket.OutgoingMessage](10,OverflowStrategy.fail)
         .mapMaterializedValue{outgoingActor =>
