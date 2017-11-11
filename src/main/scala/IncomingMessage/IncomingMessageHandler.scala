@@ -2,6 +2,7 @@ package IncomingMessage
 
 import IncomingMessage.IncomingMessageHandler.TextMessage
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import models.EndpointMessage
 import uiComponents.WebsocketListeners
 
 
@@ -17,6 +18,7 @@ class IncomingMessageHandler extends Actor with ActorLogging{
 
     case message : TextMessage =>
       websocketListeners ! message
-      sender ! message.textMessage
+    case endPointMessage : EndpointMessage =>
+      websocketListeners ! endPointMessage
   }
 }

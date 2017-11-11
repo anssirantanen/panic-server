@@ -1,8 +1,9 @@
 package uiComponents
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import models.EndpointMessage
 import uiComponents.Websocket.{ConnectToListener, OutgoingMessage, ToWebsocket}
-import uiComponents.WebsocketListeners.{ConnectToListeners}
+import uiComponents.WebsocketListeners.ConnectToListeners
 object  Websocket{
   trait WebsocketMessage
   case class ConnectToListener(outStream : ActorRef)
@@ -11,7 +12,7 @@ object  Websocket{
   def props(websocketListeners: ActorRef) = Props(new Websocket(websocketListeners))
 }
 class Websocket(websocketListeners : ActorRef) extends Actor with ActorLogging{
-  val socketContainer = websocketListeners
+  val socketContainer: ActorRef = websocketListeners
 
   override def receive : Receive= {
     case ConnectToListener(outStreamActor) =>
@@ -21,6 +22,8 @@ class Websocket(websocketListeners : ActorRef) extends Actor with ActorLogging{
   def connected(socket: ActorRef) : Receive ={
     case ToWebsocket(text:String) =>
       socket ! OutgoingMessage(text)
+    case endpointMessage : EndpointMessage =>
+      socket ! endpointMessage
   }
 
 }

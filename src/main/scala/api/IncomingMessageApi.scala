@@ -25,10 +25,8 @@ def infoMessageApiRoutes : Route  =
   path("base"){
     post{
      entity(as[EndpointMessage]){ message=>
-       val futureResponse = incomingMessageHandler ? IncomingMessageHandler.TextMessage(message.name)
-       val result  = Await.result(futureResponse,timeout.duration).asInstanceOf[String]
-       //complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`,EndpointMessage(result)))
-        complete(EndpointMessage(result))
+      incomingMessageHandler ! message
+      complete(message)
      }
     }
   }
