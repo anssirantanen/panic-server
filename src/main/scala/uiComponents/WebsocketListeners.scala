@@ -1,8 +1,8 @@
 package uiComponents
 
-import IncomingMessage.IncomingMessageHandler.TextMessage
+import IncomingMessage.IncomingFrameHandler.TextMessage
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
-import models.EndpointMessage
+import models.Frame
 import uiComponents.Websocket.{ConnectToListener, ToWebsocket}
 import uiComponents.WebsocketListeners.ConnectToListeners
 object  WebsocketListeners {
@@ -17,7 +17,7 @@ class WebsocketListeners  extends Actor with ActorLogging{
   override def receive: Receive = {
     case message :TextMessage =>
       websockets.foreach(socket => socket ! ToWebsocket(message.textMessage))
-    case endpointMessage : EndpointMessage =>
+    case endpointMessage : Frame =>
       websockets.foreach( socket => socket ! endpointMessage)
     case ConnectToListeners =>
       websockets += sender()

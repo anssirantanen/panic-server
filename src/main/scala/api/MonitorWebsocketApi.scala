@@ -14,7 +14,7 @@ import akka.NotUsed
 import akka.event.Logging
 import akka.event.jul.Logger
 import akka.http.javadsl.model.ws.WebSocket
-import models.EndpointMessage
+import models.Frame
 import io.circe.syntax._
 import io.circe.generic.auto._
 
@@ -30,7 +30,7 @@ import scala.concurrent.Await
 trait MonitorWebsocketApi {
   val actorSystem : ActorSystem
   implicit val timeout : Timeout
-  lazy val monitorWebsocketActor : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingMessageHandler/monitor-websockets-actor").resolveOne(timeout.duration),timeout.duration )
+  lazy val monitorWebsocketActor : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingFrameHandler/monitor-websockets-actor").resolveOne(timeout.duration),timeout.duration )
 
   def newWebsocketConnection() : Flow[Message, Message, NotUsed]={
     val connectedWsActor = actorSystem.actorOf(uiComponents.Websocket.props(monitorWebsocketActor))
@@ -38,12 +38,12 @@ trait MonitorWebsocketApi {
      // Flow[Message].to(Sink.actorRef(connectedWsActor,PoisonPill))
       Flow[Message].filter(_ => false).to(Sink.actorRef(connectedWsActor,PoisonPill))
     val outgoingMessage: Source[Message,NotUsed] = Source
-        .actorRef[EndpointMessage](10,OverflowStrategy.fail)
+        .actorRef[Frame](10,OverflowStrategy.fail)
         .mapMaterializedValue{outgoingActor =>
           connectedWsActor ! uiComponents.Websocket.ConnectToListener(outgoingActor)
           NotUsed
         }.map{
-      message : EndpointMessage =>
+      message : Frame =>
         val json = message.asJson
         TextMessage(json.toString())
     }
