@@ -1,7 +1,7 @@
 package uiComponents
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import models.EndpointMessage
+import models.Frame
 import uiComponents.Websocket.{ConnectToListener, OutgoingMessage, ToWebsocket}
 import uiComponents.WebsocketListeners.ConnectToListeners
 object  Websocket{
@@ -22,10 +22,9 @@ class Websocket(websocketListeners : ActorRef) extends Actor with ActorLogging{
   def connected(socket: ActorRef) : Receive ={
     case ToWebsocket(text:String) =>
       socket ! OutgoingMessage(text)
-    case endpointMessage : EndpointMessage =>
+    case endpointMessage : Frame =>
       socket ! endpointMessage
   }
-
 }
 
 

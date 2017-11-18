@@ -1,24 +1,24 @@
 package IncomingMessage
 
-import IncomingMessage.IncomingMessageHandler.TextMessage
+import IncomingMessage.IncomingFrameHandler.TextMessage
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import models.EndpointMessage
+import models.Frame
 import uiComponents.WebsocketListeners
 
 
-object IncomingMessageHandler{
+object IncomingFrameHandler{
   case class TextMessage(textMessage: String)
-  def props() : Props = Props(new IncomingMessageHandler)
+  def props() : Props = Props(new IncomingFrameHandler)
 }
 
-class IncomingMessageHandler extends Actor with ActorLogging{
+class IncomingFrameHandler extends Actor with ActorLogging{
   val websocketListeners: ActorRef = context.actorOf(WebsocketListeners.props(), "monitor-websockets-actor")
 
   override def receive: Receive = {
 
     case message : TextMessage =>
       websocketListeners ! message
-    case endPointMessage : EndpointMessage =>
+    case endPointMessage : Frame =>
       websocketListeners ! endPointMessage
   }
 }

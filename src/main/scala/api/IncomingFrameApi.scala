@@ -1,6 +1,6 @@
 package api
 
-import IncomingMessage.IncomingMessageHandler
+import IncomingMessage.IncomingFrameHandler
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.http.scaladsl.server.Directives._
@@ -9,23 +9,23 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
-import models.EndpointMessage
+import models.Frame
 import scala.concurrent.Await
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-trait IncomingMessageApi   {
+trait IncomingFrameApi   {
 
   val actorSystem: ActorSystem
   implicit val timeout : Timeout
-  lazy val incomingMessageHandler: ActorRef = actorSystem.actorOf(IncomingMessageHandler.props(),"IncomingMessageHandler")
+  lazy val incomingFrameHandler: ActorRef = actorSystem.actorOf(IncomingFrameHandler.props(),"IncomingFrameHandler")
 
-def infoMessageApiRoutes : Route  =
+def infoFrameApiRoutes : Route  =
 
   path("base"){
     post{
-     entity(as[EndpointMessage]){ message=>
-      incomingMessageHandler ! message
+     entity(as[Frame]){ message=>
+      incomingFrameHandler ! message
       complete(message)
      }
     }
