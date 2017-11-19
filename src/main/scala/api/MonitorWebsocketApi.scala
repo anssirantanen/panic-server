@@ -1,5 +1,6 @@
 package api
 
+import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{ActorRef, ActorSystem, PoisonPill}
@@ -14,7 +15,9 @@ import akka.NotUsed
 import akka.event.Logging
 import akka.event.jul.Logger
 import akka.http.javadsl.model.ws.WebSocket
-import models.Frame
+import io.circe.Decoder.Result
+import io.circe.{Decoder, Encoder, HCursor, Json}
+import models.{Frame, JsonTypeFormats}
 import io.circe.syntax._
 import io.circe.generic.auto._
 
@@ -27,7 +30,8 @@ import io.circe.generic.auto._
 
 import scala.concurrent.Await
 
-trait MonitorWebsocketApi {
+trait MonitorWebsocketApi extends  JsonTypeFormats{
+
   val actorSystem : ActorSystem
   implicit val timeout : Timeout
   lazy val monitorWebsocketActor : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingFrameHandler/monitor-websockets-actor").resolveOne(timeout.duration),timeout.duration )

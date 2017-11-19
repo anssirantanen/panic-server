@@ -1,3 +1,5 @@
 package models
 
- case class Frame(name:String, level: Int, message:String)
+import java.time.ZonedDateTime
+
+case class Frame(identity: String, name:Option[String], level: Int, time : ZonedDateTime, message:String)
