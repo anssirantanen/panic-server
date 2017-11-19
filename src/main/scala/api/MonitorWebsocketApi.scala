@@ -34,12 +34,11 @@ trait MonitorWebsocketApi extends  JsonTypeFormats{
 
   val actorSystem : ActorSystem
   implicit val timeout : Timeout
-  lazy val monitorWebsocketActor : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingFrameHandler/monitor-websockets-actor").resolveOne(timeout.duration),timeout.duration )
+  lazy val monitorWebsocketActor : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler/monitor-websockets-actor").resolveOne(timeout.duration),timeout.duration )
 
   def newWebsocketConnection() : Flow[Message, Message, NotUsed]={
     val connectedWsActor = actorSystem.actorOf(uiComponents.Websocket.props(monitorWebsocketActor))
     val incoming: Sink[Message,NotUsed]  =
-     // Flow[Message].to(Sink.actorRef(connectedWsActor,PoisonPill))
       Flow[Message].filter(_ => false).to(Sink.actorRef(connectedWsActor,PoisonPill))
     val outgoingMessage: Source[Message,NotUsed] = Source
         .actorRef[Frame](10,OverflowStrategy.fail)

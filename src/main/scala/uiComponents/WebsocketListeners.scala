@@ -1,6 +1,6 @@
 package uiComponents
 
-import IncomingMessage.IncomingFrameHandler.TextMessage
+import IncomingFrame.IncomingFrameHandler.TextMessage
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 import models.Frame
 import uiComponents.Websocket.{ConnectToListener, ToWebsocket}

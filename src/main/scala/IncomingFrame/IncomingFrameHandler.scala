@@ -1,6 +1,6 @@
-package IncomingMessage
+package IncomingFrame
 
-import IncomingMessage.IncomingFrameHandler.TextMessage
+import IncomingFrame.IncomingFrameHandler.TextMessage
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import models.Frame
 import uiComponents.WebsocketListeners
@@ -14,8 +14,8 @@ object IncomingFrameHandler{
 class IncomingFrameHandler extends Actor with ActorLogging{
   val websocketListeners: ActorRef = context.actorOf(WebsocketListeners.props(), "monitor-websockets-actor")
 
+  log.error(self.path.toString)
   override def receive: Receive = {
-
     case message : TextMessage =>
       websocketListeners ! message
     case endPointMessage : Frame =>
