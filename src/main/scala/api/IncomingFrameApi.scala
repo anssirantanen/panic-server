@@ -2,7 +2,7 @@ package api
 
 import java.time.ZonedDateTime
 
-import IncomingMessage.IncomingFrameHandler
+import IncomingFrame.IncomingFrameHandler
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.http.scaladsl.server.Directives._
@@ -23,16 +23,15 @@ trait IncomingFrameApi extends  JsonTypeFormats{
 
   val actorSystem: ActorSystem
   implicit val timeout : Timeout
-  lazy val incomingFrameHandler: ActorRef = actorSystem.actorOf(IncomingFrameHandler.props(),"IncomingFrameHandler")
+  lazy val incomingFrameHandler : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler").resolveOne(timeout.duration),timeout.duration )
 
-def infoFrameApiRoutes : Route  =
-
-  path("base"){
-    post{
-     entity(as[Frame]){ message=>
-       incomingFrameHandler ! message
-      complete(message)
-     }
-    }
+  def infoFrameApiRoutes : Route  =
+    path("base"){
+      post{
+        entity(as[Frame]){ message=>
+          incomingFrameHandler ! message
+          complete(message)
+        }
+      }
   }
 }
