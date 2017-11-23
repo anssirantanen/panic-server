@@ -1,6 +1,6 @@
 import java.util.concurrent.TimeUnit
 
-import IncomingFrame.{IncomingFrameGuard, IncomingFrameHandler}
+import incomingFrame.{IncomingFrameGuard, IncomingFrameHandler}
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}

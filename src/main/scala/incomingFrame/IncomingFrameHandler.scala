@@ -1,6 +1,6 @@
-package IncomingFrame
+package incomingFrame
 
-import IncomingFrame.IncomingFrameHandler.TextMessage
+import incomingFrame.IncomingFrameHandler.TextMessage
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import models.Frame
 import uiComponents.WebsocketListeners
