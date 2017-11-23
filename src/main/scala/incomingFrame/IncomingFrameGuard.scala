@@ -1,4 +1,4 @@
-package IncomingFrame
+package incomingFrame
 
 import akka.actor.{Actor, ActorRef, Props}
 

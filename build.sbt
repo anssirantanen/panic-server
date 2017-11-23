@@ -18,4 +18,5 @@ libraryDependencies ++= Seq(
   "io.circe"          %% "circe-generic"     % "0.9.0-M2",
   "io.circe"          %% "circe-parser"     % "0.9.0-M2",
 
+  "com.outworkers"  %% "phantom-dsl" %"2.15.5"
 )
