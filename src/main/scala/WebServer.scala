@@ -9,6 +9,7 @@ import akka.stream.{ActorMaterializer, Materializer}
 import akka.http.scaladsl.server.Directives._
 import akka.util.Timeout
 import api.{IncomingFrameApi, MonitorWebsocketApi}
+import db.Connector
 
 import scala.concurrent.ExecutionContext
 import scala.io.StdIn
@@ -24,6 +25,8 @@ object WebServer  extends App with IncomingFrameApi with MonitorWebsocketApi{
   val frameGuard = actorSystem.actorOf(IncomingFrameGuard.props(), "IncomingFrameGuard")
   val routes = websocketRoute ~ infoFrameApiRoutes
   val bindingFuture = Http().bindAndHandle(routes, "localhost", 9000)
+
+  log.info(Connector.connector.cassandraVersion.toString)
 
   bindingFuture
     .map(_.localAddress)
