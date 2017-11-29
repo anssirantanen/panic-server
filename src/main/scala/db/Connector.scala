@@ -6,7 +6,7 @@ import com.outworkers.phantom.dsl._
 
 
 object Connector {
-  val connector: CassandraConnection = ContactPoint.local
+  val Connector : CassandraConnection = ContactPoint.local
     .withClusterBuilder(_.withSocketOptions(
       new SocketOptions()
         .setConnectTimeoutMillis(20000)
@@ -18,5 +18,9 @@ object Connector {
       replication eqs SimpleStrategy.replication_factor(1)
     )
   )
-  //val connector : CassandraConnection = ContactPoint("localhost",9042).keySpace("panic")
+
+  val connector : CassandraConnection = ContactPoint("localhost",9042).keySpace("panic")
 }
+
+
+trait BaseConnector extends Connector.connector.Connector

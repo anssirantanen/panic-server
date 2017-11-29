@@ -1,12 +1,10 @@
 package db
-import com.outworkers.phantom.connectors.CassandraConnection
-import com.outworkers.phantom.database.Database
-
-import db.Connector._
+import com.outworkers.phantom.dsl._
+import com.outworkers.phantom.connectors
 
 class FrameDatabase(override val connector: CassandraConnection) extends Database[FrameDatabase](connector){
-  object frameTable extends FrameTable with connector.Connector
+  object frameTable extends FrameTable with Connector
 }
 
 //connector from db.connector object
-object FrameDatabase extends FrameDatabase(connector )
+object FrameDatabase extends FrameDatabase(Connector.connector)
