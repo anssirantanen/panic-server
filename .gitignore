@@ -1,1 +1,4 @@
-/.idea
+/.idea/
+project/project/
+project/target/streams/compile/compileIncSetup/
+src/test/
