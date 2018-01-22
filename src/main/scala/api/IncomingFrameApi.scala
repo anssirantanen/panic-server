@@ -30,7 +30,7 @@ trait IncomingFrameApi extends  JsonTypeFormats{
       post{
         entity(as[Frame]){ message=>
           incomingFrameHandler ! message
-          complete(message)
+          complete("")
         }
       }
   }
