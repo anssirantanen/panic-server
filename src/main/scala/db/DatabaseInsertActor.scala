@@ -7,8 +7,8 @@ object DatabaseInsertActor{
   def props = Props(new DatabaseInsertActor)
 }
 class DatabaseInsertActor extends Actor with db.Connector.connector.Connector {
-  val db = FrameDatabase.frameTable
+  val frameTable = FrameDatabase.frameTable
   override def receive = {
-    case fr : Frame => db.store(fr)
+    case fr : Frame => frameTable.store(fr)
   }
 }
