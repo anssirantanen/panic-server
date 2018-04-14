@@ -15,6 +15,7 @@ import akka.NotUsed
 import akka.event.Logging
 import akka.event.jul.Logger
 import akka.http.javadsl.model.ws.WebSocket
+import core.MainActorSystem
 import io.circe.Decoder.Result
 import io.circe.{Decoder, Encoder, HCursor, Json}
 import models.{Frame, JsonTypeFormats}
@@ -30,13 +31,13 @@ import io.circe.generic.auto._
 
 import scala.concurrent.Await
 
-trait MonitorWebsocketApi extends  JsonTypeFormats{
+object MonitorWebsocketApi extends  JsonTypeFormats{
 
-  val actorSystem : ActorSystem
-  implicit val timeout : Timeout
-  lazy val monitorWebsocketActor : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler/monitor-websockets-actor").resolveOne(timeout.duration),timeout.duration )
+  val actorSystem : ActorSystem = MainActorSystem.get
+  lazy val monitorWebsocketActor = actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler/monitor-websockets-actor")
 
   def newWebsocketConnection() : Flow[Message, Message, NotUsed]={
+
     val connectedWsActor = actorSystem.actorOf(uiComponents.Websocket.props(monitorWebsocketActor))
     val incoming: Sink[Message,NotUsed]  =
       Flow[Message].filter(_ => false).to(Sink.actorRef(connectedWsActor,PoisonPill))

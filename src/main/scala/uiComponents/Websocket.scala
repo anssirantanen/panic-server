@@ -1,6 +1,6 @@
 package uiComponents
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, ActorSelection, Props}
 import models.Frame
 import uiComponents.Websocket.{ConnectToListener, OutgoingMessage, ToWebsocket}
 import uiComponents.WebsocketListeners.ConnectToListeners
@@ -9,10 +9,10 @@ object  Websocket{
   case class ConnectToListener(outStream : ActorRef)
   case class ToWebsocket(text:String) extends WebsocketMessage
   case class OutgoingMessage(message: String)
-  def props(websocketListeners: ActorRef) = Props(new Websocket(websocketListeners))
+  def props(websocketListeners: ActorSelection) = Props(new Websocket(websocketListeners))
 }
-class Websocket(websocketListeners : ActorRef) extends Actor with ActorLogging{
-  val socketContainer: ActorRef = websocketListeners
+class Websocket(websocketListeners : ActorSelection) extends Actor with ActorLogging{
+  val socketContainer= websocketListeners
 
   override def receive : Receive= {
     case ConnectToListener(outStreamActor) =>

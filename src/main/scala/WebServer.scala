@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext
 import scala.io.StdIn
 
 
-object WebServer  extends App with IncomingFrameApi with MonitorWebsocketApi{
+object WebServer  extends App {
   implicit val actorSystem: ActorSystem = ActorSystem("main-system")
   implicit val materializer : ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContext = actorSystem.dispatcher
@@ -23,7 +23,7 @@ object WebServer  extends App with IncomingFrameApi with MonitorWebsocketApi{
 
   val log = actorSystem.log
   val frameGuard = actorSystem.actorOf(IncomingFrameGuard.props(), "IncomingFrameGuard")
-  val routes = websocketRoute ~ infoFrameApiRoutes
+  val routes = MonitorWebsocketApi.websocketRoute ~ IncomingFrameApi.incomingFrameApiRoutes
   val bindingFuture = Http().bindAndHandle(routes, "localhost", 9000)
 
   log.info(Connector.connector.cassandraVersion.toString)

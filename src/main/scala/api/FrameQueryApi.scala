@@ -1,17 +1,18 @@
 package api
 
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{ActorRef, ActorSelection, ActorSystem}
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
 import models.JsonTypeFormats
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
+import core.MainActorSystem
+import frameQuerry.FrameQueryHandler
 
 
 object  FrameQueryApi  extends JsonTypeFormats{
- val actorSystem : ActorSystem =
- implicit val timeout : Timeout
- lazy val frameQueryHandler  : ActorRef = actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler/monitor-websockets-actor").resolveOne(timeout.duration).value.get.get
+ val actorSystem : ActorSystem = MainActorSystem.get
+ lazy val frameQueryHandler: ActorSelection = actorSystem.actorSelection(FrameQueryHandler.hardAddress)
 
   val listFrames : Route =
     path("frames"){

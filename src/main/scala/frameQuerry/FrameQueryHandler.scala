@@ -11,6 +11,7 @@ case class QueryAll() extends FrameQuery
 
 object FrameQueryHandler {
 def props = Props(new FrameQueryHandler)
+ def hardAddress = "/user/IncomingFrameGuard/IncomingFrameHandler/monitor-websockets-actor"
 }
 
 class FrameQueryHandler extends Actor with ActorLogging {

@@ -2,7 +2,7 @@ package api
 
 import java.time.ZonedDateTime
 
-import incomingFrame.IncomingFrameHandler
+import incomingFrame.{IncomingFrameGuard, IncomingFrameHandler}
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.http.scaladsl.server.Directives._
@@ -11,6 +11,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
+import core.MainActorSystem
 import models.{Frame, JsonTypeFormats}
 
 import scala.concurrent.Await
@@ -19,13 +20,13 @@ import io.circe.Decoder.Result
 import io.circe.{Decoder, Encoder, HCursor, Json}
 import io.circe.generic.auto._
 
-trait IncomingFrameApi extends  JsonTypeFormats{
+object IncomingFrameApi extends  JsonTypeFormats{
 
-  val actorSystem: ActorSystem
-  implicit val timeout : Timeout
-  lazy val incomingFrameHandler : ActorRef =Await.result(actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler").resolveOne(timeout.duration),timeout.duration )
+  val actorSystem: ActorSystem = MainActorSystem.get
+ // lazy val incomingFrameHandler =actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler")
+ lazy val incomingFrameHandler = actorSystem.actorOf(IncomingFrameGuard.props())
 
-  def infoFrameApiRoutes : Route  =
+  def incomingFrameApiRoutes : Route  =
     path("base"){
       post{
         entity(as[Frame]){ message=>

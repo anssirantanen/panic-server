@@ -15,7 +15,6 @@ object IncomingFrameHandler{
 class IncomingFrameHandler extends Actor with ActorLogging{
   val websocketListeners: ActorRef = context.actorOf(WebsocketListeners.props, "monitor-websockets-actor")
   val databaseInsertActor: ActorRef = context.actorOf(DatabaseInsertActor.props)
-  log.error(self.path.toString)
   override def receive: Receive = {
     case message : TextMessage =>
       websocketListeners ! message
