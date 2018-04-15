@@ -12,7 +12,7 @@ import frameQuerry.FrameQueryHandler
 
 object  FrameQueryApi  extends JsonTypeFormats{
  val actorSystem : ActorSystem = MainActorSystem.get
- lazy val frameQueryHandler: ActorSelection = actorSystem.actorSelection(FrameQueryHandler.hardAddress)
+ lazy val frameQueryHandler: ActorRef = actorSystem.actorOf(FrameQueryHandler.props)
 
   val listFrames : Route =
     path("frames"){
