@@ -21,15 +21,22 @@ object WebServer  extends App {
   implicit val executionContext: ExecutionContext = actorSystem.dispatcher
   implicit val timeout : Timeout=  Timeout(5, TimeUnit.SECONDS)
 
+
+
   val log = actorSystem.log
-  val frameGuard = actorSystem.actorOf(IncomingFrameGuard.props(), "IncomingFrameGuard")
   val routes = MonitorWebsocketApi.websocketRoute ~ IncomingFrameApi.incomingFrameApiRoutes
   val bindingFuture = Http().bindAndHandle(routes, "localhost", 9000)
 
-  log.info(Connector.connector.cassandraVersion.toString)
 
   bindingFuture
     .map(_.localAddress)
     .map(addr => s"Bound to $addr")
     .foreach(log.info)
+
+    initializeGuardActors()
+
+
+  def initializeGuardActors()={
+    IncomingFrameGuard.instance
+  }
 }

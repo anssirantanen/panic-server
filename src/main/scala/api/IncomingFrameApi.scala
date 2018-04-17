@@ -23,7 +23,7 @@ import io.circe.generic.auto._
 object IncomingFrameApi extends  JsonTypeFormats{
 
   val actorSystem: ActorSystem = MainActorSystem.get
- lazy val incomingFrameHandler = actorSystem.actorOf(IncomingFrameGuard.props())
+ lazy val incomingFrameHandler = actorSystem.actorSelection("/user/IncomingFrameGuard/IncomingFrameHandler")
 
   def incomingFrameApiRoutes : Route  =
     path("base"){

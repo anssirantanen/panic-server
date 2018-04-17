@@ -13,13 +13,20 @@ object IncomingFrameHandler{
 }
 
 class IncomingFrameHandler extends Actor with ActorLogging{
-  val websocketListeners: ActorRef = context.actorOf(WebsocketListeners.props, "monitor-websockets-actor")
+
+  val websocketListeners: ActorRef = context.actorOf(WebsocketListeners.props(), "monitor-websockets-actor")
   val databaseInsertActor: ActorRef = context.actorOf(DatabaseInsertActor.props)
   override def receive: Receive = {
     case message : TextMessage =>
       websocketListeners ! message
     case endPointMessage : Frame =>
+      log.info("frame received")
       databaseInsertActor ! Frame
       websocketListeners ! endPointMessage
+  }
+
+
+  override def preStart()={
+    log.info("frame handler booting up")
   }
 }
