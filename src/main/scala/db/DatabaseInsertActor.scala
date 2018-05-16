@@ -9,6 +9,6 @@ object DatabaseInsertActor{
 class DatabaseInsertActor extends Actor with db.Connector.connector.Connector with ActorLogging{
   val frameTable = FrameDatabase.frameTable
   override def receive = {
-    case fr : Frame => frameTable.store(fr)
+    case fr : Frame => //frameTable.store(fr)
   }
 }

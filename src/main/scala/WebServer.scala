@@ -8,7 +8,7 @@ import akka.http.scaladsl.server.ContentNegotiator.Alternative.ContentType
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.http.scaladsl.server.Directives._
 import akka.util.Timeout
-import api.{IncomingFrameApi, MonitorWebsocketApi}
+import api.{IncomingFrameApi, MonitorWebsocketApi, Producer}
 import db.Connector
 
 import scala.concurrent.ExecutionContext
@@ -25,7 +25,8 @@ object WebServer  extends App {
 
   val log = actorSystem.log
   val routes = MonitorWebsocketApi.websocketRoute ~ IncomingFrameApi.incomingFrameApiRoutes
-  val bindingFuture = Http().bindAndHandle(routes, "localhost", 9000)
+  val routes2 = Producer.producerRoutes()
+  val bindingFuture = Http().bindAndHandle(routes2, "localhost", 9000)
 
 
   bindingFuture
