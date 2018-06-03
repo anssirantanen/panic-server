@@ -4,6 +4,8 @@ version := "0.1"
 
 scalaVersion := "2.12.4"
 
+enablePlugins(FlywayPlugin)
+
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % "10.0.10",
@@ -19,5 +21,15 @@ libraryDependencies ++= Seq(
   "io.circe"          %% "circe-parser"     % "0.9.0-M2",
 
   "com.outworkers"  %% "phantom-dsl" %"2.15.5",
-  "com.outworkers" %% "phantom-jdk8" % "2.15.5"
+  "com.outworkers" %% "phantom-jdk8" % "2.15.5",
+
+  "org.scalikejdbc" %% "scalikejdbc"       % "3.2.2",
+  "org.scalikejdbc" %% "scalikejdbc-config"  % "3.2.2",
+  "ch.qos.logback"  %  "logback-classic"   % "1.2.3",
+  "org.postgresql" % "postgresql" % "42.2.2",
+  "org.flywaydb" % "flyway-maven-plugin" % "5.0.7"
 )
+
+flywayUrl := "jdbc:postgresql://localhost:5432/panic"
+flywayUser := "panic"
+flywayPassword := "panic"

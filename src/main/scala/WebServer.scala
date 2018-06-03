@@ -9,11 +9,9 @@ import akka.stream.{ActorMaterializer, Materializer}
 import akka.http.scaladsl.server.Directives._
 import akka.util.Timeout
 import api.{IncomingFrameApi, MonitorWebsocketApi, Producer}
-import db.Connector
+import scalikejdbc.config.DBs
 
 import scala.concurrent.ExecutionContext
-import scala.io.StdIn
-
 
 object WebServer  extends App {
   implicit val actorSystem: ActorSystem = ActorSystem("main-system")
@@ -28,6 +26,7 @@ object WebServer  extends App {
   val routes2 = Producer.producerRoutes()
   val bindingFuture = Http().bindAndHandle(routes2, "localhost", 9000)
 
+  DBs.setup('panic)
 
   bindingFuture
     .map(_.localAddress)
