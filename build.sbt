@@ -20,9 +20,6 @@ libraryDependencies ++= Seq(
   "io.circe"          %% "circe-generic"     % "0.9.0-M2",
   "io.circe"          %% "circe-parser"     % "0.9.0-M2",
 
-  "com.outworkers"  %% "phantom-dsl" %"2.15.5",
-  "com.outworkers" %% "phantom-jdk8" % "2.15.5",
-
   "org.scalikejdbc" %% "scalikejdbc"       % "3.2.2",
   "org.scalikejdbc" %% "scalikejdbc-config"  % "3.2.2",
   "ch.qos.logback"  %  "logback-classic"   % "1.2.3",
