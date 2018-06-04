@@ -7,6 +7,6 @@ CREATE TABLE producer_tag (
     tag VARCHAR(255) PRIMARY KEY
 );
 CREATE TABLE producer_tag_link (
-    id REFERENCES producer.id,
-    tag REFERENCES producer_tag.tag
+    id UUID REFERENCES producer(id),
+    tag  VARCHAR(255) REFERENCES producer_tag(tag)
 );
