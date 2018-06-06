@@ -4,9 +4,10 @@ CREATE TABLE producer (
     description TEXT
 );
 CREATE TABLE producer_tag (
-    tag VARCHAR(255) PRIMARY KEY
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tag VARCHAR(255)
 );
 CREATE TABLE producer_tag_link (
-    id UUID REFERENCES producer(id),
-    tag  VARCHAR(255) REFERENCES producer_tag(tag)
+    producer UUID REFERENCES producer(id),
+    tag  UUID REFERENCES producer_tag(id)
 );
