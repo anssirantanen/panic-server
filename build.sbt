@@ -22,7 +22,9 @@ libraryDependencies ++= Seq(
 
   "org.scalikejdbc" %% "scalikejdbc"       % "3.2.2",
   "org.scalikejdbc" %% "scalikejdbc-config"  % "3.2.2",
+
   "ch.qos.logback"  %  "logback-classic"   % "1.2.3",
+
   "org.postgresql" % "postgresql" % "42.2.2",
   "org.flywaydb" % "flyway-maven-plugin" % "5.0.7"
 )
