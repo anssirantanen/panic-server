@@ -41,7 +41,7 @@ object ProducerDal {
         false
     }
   }
-  def get(id:String): Option[Producer] ={
+  def get(id:String)(implicit dBSession: DBSession): Option[Producer] ={
    try {
      sql"""SELECT * FROM producer WHERE id = $id"""
        .stripMargin
@@ -53,7 +53,7 @@ object ProducerDal {
        None
    }
   }
-  def list():Option[List[Producer]] = {
+  def list()(implicit dBSession: DBSession):Option[List[Producer]] = {
     try {
      val res =  sql"""SELECT * FROM producer"""
         .stripMargin

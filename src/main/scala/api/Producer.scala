@@ -11,7 +11,9 @@ object Producer {
   def producerRoutes():Route = {
     pathPrefix("producer"){
       pathEndOrSingleSlash {
-        complete("base")
+        post{
+          complete("base")
+        }
       } ~
       path("producer" / IntNumber){ id =>
         pathEndOrSingleSlash{

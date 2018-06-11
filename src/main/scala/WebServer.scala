@@ -17,7 +17,7 @@ import scalikejdbc.config.DBs
 import scala.concurrent.ExecutionContext
 
 object WebServer  extends App {
-  implicit val actorSystem: ActorSystem = MainActorSystem.get
+  implicit val actorSystem: ActorSystem =MainActorSystem.get
   implicit val materializer : ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContext = actorSystem.dispatcher
   implicit val timeout : Timeout=  Timeout(5, TimeUnit.SECONDS)
