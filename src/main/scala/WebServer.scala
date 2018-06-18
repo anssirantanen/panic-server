@@ -10,7 +10,7 @@ import akka.stream.{ActorMaterializer, Materializer}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.directives.LogEntry
 import akka.util.Timeout
-import api.{IncomingFrameApi, MonitorWebsocketApi, Producer}
+import api.{IncomingFrameApi, MonitorWebsocketApi, ProducerRoutes}
 import core.MainActorSystem
 import scalikejdbc.config.DBs
 
@@ -25,7 +25,7 @@ object WebServer  extends App {
 
   val log = Logging(MainActorSystem.get, this.getClass)
   val routes = MonitorWebsocketApi.websocketRoute ~ IncomingFrameApi.incomingFrameApiRoutes
-  val routes2 = Producer.producerRoutes()
+  val routes2 = ProducerRoutes.producerRoutes()
   val bindingFuture = Http().bindAndHandle(routes2, "localhost", 9000)
 
 
