@@ -12,6 +12,7 @@ import akka.http.scaladsl.server.directives.LogEntry
 import akka.util.Timeout
 import api.{IncomingFrameApi, MonitorWebsocketApi, ProducerRoutes}
 import core.MainActorSystem
+import producer.ProducerServiceImpl
 import scalikejdbc.config.DBs
 
 import scala.concurrent.ExecutionContext
@@ -25,7 +26,8 @@ object WebServer  extends App {
 
   val log = Logging(MainActorSystem.get, this.getClass)
   val routes = MonitorWebsocketApi.websocketRoute ~ IncomingFrameApi.incomingFrameApiRoutes
-  val routes2 = ProducerRoutes.producerRoutes()
+  val mock = new ProducerServiceImpl
+  val routes2 = ProducerRoutes.producerRoutes(mock)
   val bindingFuture = Http().bindAndHandle(routes2, "localhost", 9000)
 
 

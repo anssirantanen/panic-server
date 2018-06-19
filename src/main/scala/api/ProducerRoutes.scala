@@ -23,25 +23,37 @@ object ProducerRoutes {
         post {
           entity(as[ProducerModel]){ producer=>
             onSuccess(ps.create(producer)) {
-              case Left(err) => complete("")
-              case Right(np) => complete("")
+              case Left(err) => core.ServerError.toResponse(err)
+              case Right(np) => complete(np)
             }
           } ~
             complete(BadRequest, "Not a correct producer")
         } ~
-        complete(BadRequest, "Not a producer.")
+        complete(NotFound)
       } ~
       path(IntNumber){ id =>
         get{
-          entity(as[ProducerModel]){ producer =>
-            complete("num"+ id)
+          {
+            onSuccess(ps.get(id)){
+              case Left(err) => core.ServerError.toResponse(err)
+              case Right(np) => complete(np)
+            }
           }
         }~
           put{
             entity(as[ProducerModel]){ producer =>
-              complete("update")
+              onSuccess(ps.update(producer)){
+                case Left(err) => core.ServerError.toResponse(err)
+                case Right(np) => complete(np)
+              }
             }~
             complete(BadRequest)
+          } ~
+          delete{
+            onSuccess(ps.delete(id)){
+              case Left(err) => core.ServerError.toResponse(err)
+              case Right(np) => if(np) complete() else complete(InternalServerError)
+            }
           } ~
         complete(NotFound)
       }
