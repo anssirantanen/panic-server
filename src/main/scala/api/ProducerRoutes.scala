@@ -36,7 +36,7 @@ object ProducerRoutes {
           {
             onSuccess(ps.get(id)){
               case Left(err) => core.ServerError.toResponse(err)
-              case Right(np) => complete(np)
+              case Right(np) =>  np.map(complete(_)).getOrElse(complete(NotFound))
             }
           }
         }~

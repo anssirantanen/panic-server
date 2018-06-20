@@ -27,7 +27,9 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j" % "2.5.13",
 
   "org.postgresql" % "postgresql" % "42.2.2",
-  "org.flywaydb" % "flyway-maven-plugin" % "5.0.7"
+  "org.flywaydb" % "flyway-maven-plugin" % "5.0.7",
+
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
 
 flywayUrl := "jdbc:postgresql://localhost:5432/panic"
