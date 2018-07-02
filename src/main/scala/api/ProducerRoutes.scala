@@ -31,7 +31,7 @@ object ProducerRoutes {
         } ~
         complete(NotFound)
       } ~
-      path(IntNumber){ id =>
+      path(Segment){ id =>
         get{
           {
             onSuccess(ps.get(id)){

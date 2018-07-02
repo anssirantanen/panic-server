@@ -1,3 +1,3 @@
 package models
 
-case class ProducerModel(id: String, name: String, description: String, tags: List[String])
+case class ProducerModel(id: Option[String], name: String, description: String, tags: List[String])

@@ -9,8 +9,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait ProducerService {
   def create(producer: ProducerModel): Future[Either[ServerError, ProducerModel]]
   def update(producer: ProducerModel): Future[Either[ServerError, ProducerModel]]
-  def get(id:Int): Future[Either[ServerError, Option[ProducerModel]]]
-  def delete(id: Int): Future[Either[ServerError,Boolean]]
+  def get(id:String): Future[Either[ServerError, Option[ProducerModel]]]
+  def delete(id: String): Future[Either[ServerError,Boolean]]
   def list(): Future[Either[ServerError,List[ProducerModel]]]
 }
 
@@ -23,11 +23,11 @@ class ProducerServiceImpl extends ProducerService{
     Future.successful(Left(InternalServerError()))
   }
 
-  override def get(id: Int): Future[Either[ServerError, Option[ProducerModel]]] = {
+  override def get(id: String): Future[Either[ServerError, Option[ProducerModel]]] = {
     Future.successful(Left(InternalServerError()))
   }
 
-  override def delete(id: Int): Future[Either[ServerError, Boolean]] = {
+  override def delete(id: String): Future[Either[ServerError, Boolean]] = {
     Future.successful(Left(InternalServerError()))
   }
 

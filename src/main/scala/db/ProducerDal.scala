@@ -45,7 +45,7 @@ object ProducerDal {
    try {
      sql"""SELECT * FROM producer WHERE id = $id"""
        .stripMargin
-       .map(rs => ProducerModel(rs.string("id"),rs.string("name"),rs.string("description"),List()))
+       .map(rs => ProducerModel(rs.stringOpt("id"),rs.string("name"),rs.string("description"),List()))
        .single().apply()
    }catch {
      case t:Throwable =>
@@ -57,7 +57,7 @@ object ProducerDal {
     try {
      val res =  sql"""SELECT * FROM producer"""
         .stripMargin
-        .map(rs => ProducerModel(rs.string("id"),rs.string("name"),rs.string("description"),List()))
+        .map(rs => ProducerModel(rs.stringOpt("id"),rs.string("name"),rs.string("description"),List()))
         .list.apply()
       Some(res)
     }catch {
