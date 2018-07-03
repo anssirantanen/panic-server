@@ -5,12 +5,13 @@ import akka.event.{Logging, LoggingAdapter}
 import akka.http.scaladsl.server.directives.LogEntry
 import core.MainActorSystem
 import models.ProducerModel
-import scalikejdbc.DBSession
-import scalikejdbc._
+import scalikejdbc.GeneralizedTypeConstraintsForWithExtractor.=:=
+import scalikejdbc.{DBSession, WithExtractor, _}
 
 import scala.util.Try
 trait ProducerDal {
-  def create(p:ProducerModel)(implicit dBSession: DBSession):Try[ProducerModel] = {
+  def create(p:ProducerModel)( db: DBSession):Try[ProducerModel] = {
+    implicit val s: DBSession = db
     Try {
       val id =
         sql"""INSERT INTO producer (name, description) VALUES (${p.name},${p.description}) RETURNING id"""
@@ -18,28 +19,33 @@ trait ProducerDal {
       p.copy(id = id)
     }
   }
-  def update(p:ProducerModel)(implicit dBSession: DBSession):Try[Unit] = {
+  def update(p:ProducerModel)( dBSession: DBSession):Try[Unit] = {
+    implicit val s = dBSession
     Try{
       sql"""UPDATE prodcer SET (name = ${p.name}, description =${p.description} WHERE id = ${p.id}"""
         .update().apply()
     }
   }
-  def delete(id:String)(implicit dBSession: DBSession): Try[Unit] = {
+  def delete(id:String)(dBSession: DBSession): Try[Unit] = {
+    implicit val session: DBSession = dBSession
     Try {sql"""DELETE FROM producer WHERE id = CAST($id as UUID)""".update().apply()
     }
+  }
 
+  def get(id:String)(se: DBSession): Try[Option[ProducerModel]] ={
+    implicit val session: DBSession = se
+    Try {
+      sql"""SELECT * FROM producer WHERE id = $id"""
+        .stripMargin
+        .map(rs => ProducerModel(rs.stringOpt("id"), rs.string("name"), rs.string("description"), List()))
+        .single().apply()
+    }
   }
-  def get(id:String)(implicit dBSession: DBSession): Try[Option[ProducerModel]] ={
-   Try {
-     sql"""SELECT * FROM producer WHERE id = $id"""
-       .stripMargin
-       .map(rs => ProducerModel(rs.stringOpt("id"),rs.string("name"),rs.string("description"),List()))
-       .single().apply()
-   }
-  }
-  def list()(implicit dBSession: DBSession):Try[List[ProducerModel]] = {
+
+  def list()(dBSession: DBSession):Try[List[ProducerModel]] = {
+    implicit  val s: DBSession = dBSession
     Try{
-     val res =  sql"""SELECT * FROM producer"""
+     lazy val res =  sql"""SELECT * FROM producer"""
         .stripMargin
         .map(rs => ProducerModel(rs.stringOpt("id"),rs.string("name"),rs.string("description"),List()))
         .list.apply()
@@ -47,6 +53,6 @@ trait ProducerDal {
     }
   }
 }
-class ProducerImpl extends ProducerDal {
+class ProducerDalImpl extends ProducerDal {
 
 }

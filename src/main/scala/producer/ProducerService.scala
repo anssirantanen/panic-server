@@ -18,14 +18,7 @@ trait ProducerService {
 
 class ProducerServiceImpl(dal: ProducerDal) extends ProducerService {
   override def create(producer: ProducerModel): Future[Either[ServerError, ProducerModel]] = {
-    NamedDB('panic) futureLocalTx { implicit  session =>
-      Future{
-        dal.create(producer) match {
-          case Some(p) => Right(p)
-          case None => Left(InternalServerError)
-        }
-      }
-    }
+    Future.successful(Left(InternalServerError()))
   }
 
   override def update(producer: ProducerModel): Future[Either[ServerError, ProducerModel]] = {
