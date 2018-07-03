@@ -1,7 +1,9 @@
 package producer
 
 import core.{InternalServerError, ServerError}
+import db.ProducerDal
 import models.ProducerModel
+import scalikejdbc.NamedDB
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,9 +16,16 @@ trait ProducerService {
   def list(): Future[Either[ServerError,List[ProducerModel]]]
 }
 
-class ProducerServiceImpl extends ProducerService{
+class ProducerServiceImpl(dal: ProducerDal) extends ProducerService {
   override def create(producer: ProducerModel): Future[Either[ServerError, ProducerModel]] = {
-    Future.successful(Left(InternalServerError()))
+    NamedDB('panic) futureLocalTx { implicit  session =>
+      Future{
+        dal.create(producer) match {
+          case Some(p) => Right(p)
+          case None => Left(InternalServerError)
+        }
+      }
+    }
   }
 
   override def update(producer: ProducerModel): Future[Either[ServerError, ProducerModel]] = {
