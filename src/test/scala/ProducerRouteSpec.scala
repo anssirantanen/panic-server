@@ -87,7 +87,7 @@ class MockProducerService extends ProducerService {
       Future.successful(Left(InternalServerError()))
     }
   }
-  override def delete(id: String): Future[Either[ServerError, Boolean]] = {
+  override def delete(id: String): Future[Either[ServerError, Unit]] = {
     Future.successful(Left(InternalServerError()))
   }
   override def list(): Future[Either[ServerError, List[ProducerModel]]] = {

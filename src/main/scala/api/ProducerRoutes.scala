@@ -52,7 +52,7 @@ object ProducerRoutes {
           delete{
             onSuccess(ps.delete(id)){
               case Left(err) => core.ServerError.toResponse(err)
-              case Right(np) => if(np) complete() else complete(InternalServerError)
+              case Right(np) =>  complete()
             }
           } ~
         complete(NotFound)

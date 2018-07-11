@@ -2,28 +2,52 @@ package db
 
 import models.ProducerModel
 import scalikejdbc.{DBSession, NamedDB}
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
+trait ProducerDalTransaction {
+  def get(id : String): Future[Try[Option[ProducerModel]]]
+  def create(p:ProducerModel): Future[Try[ProducerModel]]
+  def delete(id:String): Future[Try[Unit]]
+  def list() : Future[Try[List[ProducerModel]]]
+  def update(producerModel: ProducerModel): Future[Try[Unit]]
+}
 
-class ProducerDalTransaction(dal : ProducerDal) extends  PanicTransaction {
+class ProducerDalTransactionImpl(dal : ProducerDal) extends ProducerDalTransaction {
   def get(id : String): Future[Try[Option[ProducerModel]]] = {
-    val getCurried  = dal.get(id)(_)
-    transaction(getCurried)
+    NamedDB('panic) futureLocalTx { implicit session =>
+      Future{
+        dal.get(id)
+      }
+    }
   }
   def create(p:ProducerModel): Future[Try[ProducerModel]] = {
-    val producerCurried = dal.create(p)(_)
-    transaction(producerCurried)
+    NamedDB('panic) futureLocalTx { implicit session =>
+      Future {
+        dal.create(p)
+      }
+    }
   }
   def delete(id:String): Future[Try[Unit]] = {
-    val delCurried = dal.delete(id)(_)
-    transaction(delCurried)
+    NamedDB('panic) futureLocalTx { implicit session =>
+      Future {
+        dal.delete(id)
+      }
+    }
   }
   def list() : Future[Try[List[ProducerModel]]] = {
-    val listCurried: DBSession => Try[List[ProducerModel]] = dal.list()
-    transaction(listCurried)
+    NamedDB('panic) futureLocalTx { implicit session =>
+      Future {
+        dal.list()
+      }
+    }
   }
-
-  override implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+  def update(producerModel: ProducerModel): Future[Try[Unit]] = {
+    NamedDB('panic) futureLocalTx { implicit session =>
+      Future {
+        dal.update(producerModel)
+      }
+    }
+  }
 }

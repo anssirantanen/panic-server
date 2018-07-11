@@ -10,8 +10,7 @@ import scalikejdbc.{DBSession, WithExtractor, _}
 
 import scala.util.Try
 trait ProducerDal {
-  def create(p:ProducerModel)( db: DBSession):Try[ProducerModel] = {
-    implicit val s: DBSession = db
+  def create(p:ProducerModel)(implicit db: DBSession):Try[ProducerModel] = {
     Try {
       val id =
         sql"""INSERT INTO producer (name, description) VALUES (${p.name},${p.description}) RETURNING id"""
@@ -19,21 +18,18 @@ trait ProducerDal {
       p.copy(id = id)
     }
   }
-  def update(p:ProducerModel)( dBSession: DBSession):Try[Unit] = {
-    implicit val s = dBSession
+  def update(p:ProducerModel)(implicit dBSession: DBSession):Try[Unit] = {
     Try{
       sql"""UPDATE prodcer SET (name = ${p.name}, description =${p.description} WHERE id = ${p.id}"""
         .update().apply()
     }
   }
-  def delete(id:String)(dBSession: DBSession): Try[Unit] = {
-    implicit val session: DBSession = dBSession
+  def delete(id:String)(implicit dBSession: DBSession): Try[Unit] = {
     Try {sql"""DELETE FROM producer WHERE id = CAST($id as UUID)""".update().apply()
     }
   }
 
-  def get(id:String)(se: DBSession): Try[Option[ProducerModel]] ={
-    implicit val session: DBSession = se
+  def get(id:String)(implicit se: DBSession): Try[Option[ProducerModel]] ={
     Try {
       sql"""SELECT * FROM producer WHERE id = $id"""
         .stripMargin
@@ -42,8 +38,7 @@ trait ProducerDal {
     }
   }
 
-  def list()(dBSession: DBSession):Try[List[ProducerModel]] = {
-    implicit  val s: DBSession = dBSession
+  def list()(implicit dBSession: DBSession):Try[List[ProducerModel]] = {
     Try{
      lazy val res =  sql"""SELECT * FROM producer"""
         .stripMargin
