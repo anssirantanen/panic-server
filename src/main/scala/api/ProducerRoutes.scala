@@ -29,16 +29,20 @@ object ProducerRoutes {
           } ~
             complete(BadRequest, "Not a correct producer")
         } ~
+        get {
+          onSuccess(ps.list()) {
+            case Right(list) => complete(list)
+            case Left(err) => core.ServerError.toResponse(err)
+          }
+        } ~
         complete(NotFound)
       } ~
       path(Segment){ id =>
         get{
-          {
             onSuccess(ps.get(id)){
               case Left(err) => core.ServerError.toResponse(err)
               case Right(np) =>  np.map(complete(_)).getOrElse(complete(NotFound))
             }
-          }
         }~
           put{
             entity(as[ProducerModel]){ producer =>

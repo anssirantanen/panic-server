@@ -18,16 +18,10 @@ private object Mocs{
 
 class ProducerRouteSpec extends WordSpec with Matchers with ScalatestRouteTest {
   val mockService = new MockProducerService
-  val routes = ProducerRoutes.producerRoutes(mockService)
-  val mockEntity = Marshal(Mocs.mockP1).to[MessageEntity]
+  private val routes = ProducerRoutes.producerRoutes(mockService)
 
   "Producer routes" should {
     "get" should {
-      "Empty get 404" in {
-        Get("/producer") ~> routes ~> check {
-          status shouldEqual StatusCodes.NotFound
-        }
-      }
       "id:1 get returns ok" in {
         Get("/producer/1") ~> routes ~> check {
 
