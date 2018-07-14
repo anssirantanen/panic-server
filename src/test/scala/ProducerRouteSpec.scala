@@ -8,13 +8,10 @@ import org.scalatest.{Matchers, WordSpec}
 import producer.ProducerService
 import io.circe.generic.auto._
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
-import io.circe.Json
+import mocModels.ProducerMocs
 
 import scala.concurrent.Future
 
-private object Mocs{
-  val mockP1 = ProducerModel(None,"name1", "desc",List())
-}
 
 class ProducerRouteSpec extends WordSpec with Matchers with ScalatestRouteTest {
   val mockService = new MockProducerService
@@ -41,20 +38,20 @@ class ProducerRouteSpec extends WordSpec with Matchers with ScalatestRouteTest {
     }
     "post" should {
       "response ok " in {
-        Post("/producer/", Marshal(Mocs.mockP1).to[MessageEntity]) ~> routes ~> check {
+        Post("/producer/", Marshal(ProducerMocs.mockWithoutId).to[MessageEntity]) ~> routes ~> check {
           status shouldEqual StatusCodes.OK
         }
       }
       "add an id in post" in {
-        Post("/producer/", Marshal(Mocs.mockP1).to[MessageEntity]) ~> routes ~> check {
-          responseAs[ProducerModel] shouldEqual Mocs.mockP1.copy(id = Some("id"))
+        Post("/producer/", Marshal(ProducerMocs.mockWithoutId).to[MessageEntity]) ~> routes ~> check {
+          responseAs[ProducerModel] shouldEqual ProducerMocs.mockWithoutId.copy(id = Some("id"))
         }
       }
     }
     "put" should {
       "return ok response" in {
-        Put("/producer/id", Marshal(Mocs.mockP1.copy(id = Some("id"))).to[MessageEntity]) ~> routes ~> check {
-          responseAs[ProducerModel] shouldEqual Mocs.mockP1.copy(id = Some("id"))
+        Put("/producer/id", Marshal(ProducerMocs.mockWithoutId.copy(id = Some("id"))).to[MessageEntity]) ~> routes ~> check {
+          responseAs[ProducerModel] shouldEqual ProducerMocs.mockWithoutId.copy(id = Some("id"))
         }
       }
       "return bad request on string message" in {
@@ -78,7 +75,7 @@ class ProducerRouteSpec extends WordSpec with Matchers with ScalatestRouteTest {
       }
       "should return list of 1" in {
         Get("/producer/") ~> routes ~> check{
-          responseAs[List[ProducerModel]] shouldEqual List(Mocs.mockP1)
+          responseAs[List[ProducerModel]] shouldEqual List(ProducerMocs.mockWithoutId)
         }
       }
     }
@@ -93,7 +90,7 @@ class MockProducerService extends ProducerService {
   }
   override def get(id: String): Future[Either[ServerError, Option[ProducerModel]]] = {
     if(id=="1"){
-      Future.successful(Right(Some(Mocs.mockP1)))
+      Future.successful(Right(Some(ProducerMocs.mockWithoutId)))
     } else if(id=="2"){
       Future.successful(Right(None))
     }else{
@@ -104,6 +101,6 @@ class MockProducerService extends ProducerService {
     Future.successful(Right())
   }
   override def list(): Future[Either[ServerError, List[ProducerModel]]] = {
-    Future.successful(Right(List(Mocs.mockP1)))
+    Future.successful(Right(List(ProducerMocs.mockWithoutId)))
   }
 }
