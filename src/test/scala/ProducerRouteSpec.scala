@@ -69,6 +69,25 @@ class ProducerRouteSpec extends WordSpec with Matchers with ScalatestRouteTest {
         }
       }
     }
+    "delete" should {
+      "return ok on success" in {
+        Delete("/producer/id") ~> routes ~> check{
+          status shouldEqual StatusCodes.OK
+        }
+      }
+    }
+    "list " should {
+      "return ok" in {
+        Get("/producer/") ~> routes ~> check{
+          status shouldEqual StatusCodes.OK
+        }
+      }
+      "should return list of 1" in {
+        Get("/producer/") ~> routes ~> check{
+          responseAs[List[ProducerModel]] shouldEqual List(Mocs.mockP1)
+        }
+      }
+    }
   }
 }
 class MockProducerService extends ProducerService {
@@ -88,9 +107,9 @@ class MockProducerService extends ProducerService {
     }
   }
   override def delete(id: String): Future[Either[ServerError, Unit]] = {
-    Future.successful(Left(InternalServerError()))
+    Future.successful(Right())
   }
   override def list(): Future[Either[ServerError, List[ProducerModel]]] = {
-    Future.successful(Left(InternalServerError()))
+    Future.successful(Right(List(Mocs.mockP1)))
   }
 }
