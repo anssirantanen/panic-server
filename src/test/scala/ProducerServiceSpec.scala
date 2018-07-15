@@ -30,6 +30,38 @@ class ProducerServiceSpec  extends WordSpec with Matchers {
       }
     }
   }
+  "create" should {
+    "add id" in {
+      service.create(ProducerMocs.mockWithoutId).map{
+        case Right(p) => p.id.isDefined
+        case Left(err) => false
+      }
+    }
+  }
+  "delete" should {
+    "be right unit" in {
+      service.delete("id").map {
+      case Right(unit) => true
+      case Left(err) => false
+      }
+    }
+  }
+  "list" should {
+    "return producer list" in {
+      service.list().map{
+        case Right(list) => list shouldEqual List(ProducerMocs.mockWithId)
+        case Left(err) => false
+      }
+    }
+  }
+  "update" should {
+    "return unit" in {
+      service.update(ProducerMocs.mockWithId).map{
+        case Right(unit) => true
+        case Left(err) => false
+      }
+    }
+  }
 }
 
 class MockProducerTransaction extends ProducerDalTransaction {
@@ -42,11 +74,19 @@ class MockProducerTransaction extends ProducerDalTransaction {
     }
   }
 
-  override def create(p: ProducerModel): Future[Try[ProducerModel]] = ???
+  override def create(p: ProducerModel): Future[Try[ProducerModel]] = {
+    Future(Try(p.copy(id =Some("withId"))))
+  }
 
-  override def delete(id: String): Future[Try[Unit]] = ???
+  override def delete(id: String): Future[Try[Unit]] = {
+    Future.successful(Success[Unit]())
+  }
 
-  override def list(): Future[Try[List[ProducerModel]]] = ???
+  override def list(): Future[Try[List[ProducerModel]]] = {
+    Future.successful(Success[List[ProducerModel]](List(ProducerMocs.mockWithId)))
+  }
 
-  override def update(producerModel: ProducerModel): Future[Try[Unit]] = ???
+  override def update(producerModel: ProducerModel): Future[Try[Unit]] = {
+    Future.successful(Success[Unit]())
+  }
 }
